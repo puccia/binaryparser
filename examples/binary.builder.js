@@ -27,20 +27,22 @@ exports.BinaryBuilder = Class({
 		this.buffer[this.index++] = val & 0xff;
 		return this;
 	},
+
+	// The following functions build big endian representations.
 	
 	addShort: function(val){
 	
-		this.buffer[this.index++] = val & 0xff;
 		this.buffer[this.index++] = (val >> 8) & 0xff;
+		this.buffer[this.index++] = val & 0xff;
 		return this;
 	},
 	
 	addDword: function(val){
 
-		this.buffer[this.index++] = val & 0xff;
-		this.buffer[this.index++] = (val >> 8) & 0xff;
-		this.buffer[this.index++] = (val >> 16) & 0xff;
 		this.buffer[this.index++] = (val >> 24) & 0xff;		
+		this.buffer[this.index++] = (val >> 16) & 0xff;
+		this.buffer[this.index++] = (val >> 8) & 0xff;
+		this.buffer[this.index++] = val & 0xff;
 		return this;
 	},
 	
@@ -56,6 +58,11 @@ exports.BinaryBuilder = Class({
 		this.addDword(str.length);
 		this.addString(str);
 		return this;
+	},
+
+	appendBuffer: function(buf){
+		buf.copy(this.buffer, this.index);
+		this.index += buf.length;
 	},
 	
 	getBuffer: function(){
